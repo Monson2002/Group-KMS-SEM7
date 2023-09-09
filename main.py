@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, session, redirect, url_for
-from flask_socketio import join_room, leave_room, send, SocketIO
+from flask_socketio import join_room, leave_room, send, SocketIO, emit
 import random
 from string import ascii_uppercase
 
@@ -8,17 +8,6 @@ app.config["SECRET_KEY"] = "hjhjsdahhds"
 socketio = SocketIO(app)
 
 rooms = {}
-
-def generate_unique_code(length):
-    while True:
-        code = ""
-        for _ in range(length):
-            code += random.choice(ascii_uppercase)
-        
-        if code not in rooms:
-            break
-    
-    return code
 
 @app.route("/", methods=["POST", "GET"])
 def home():
@@ -37,8 +26,7 @@ def home():
         
         room = code
         if create != False:
-            room = generate_unique_code(4)
-            rooms[room] = {"members": 0, "messages": []}
+            rooms[room] = {"members": 0, "messages": [], "member_names": []}
         elif code not in rooms:
             return render_template("home.html", error="Room does not exist.", code=code, name=name)
         
@@ -71,9 +59,10 @@ def message(data):
     print(f"{session.get('name')} said: {data['data']}")
 
 @socketio.on("connect")
-def connect(auth):
+def connect():
     room = session.get("room")
     name = session.get("name")
+
     if not room or not name:
         return
     if room not in rooms:
@@ -83,6 +72,7 @@ def connect(auth):
     join_room(room)
     send({"name": name, "message": "has entered the room"}, to=room)
     rooms[room]["members"] += 1
+    rooms[room]["member_names"].append(name)
     print(f"{name} joined room {room}")
 
 @socketio.on("disconnect")
