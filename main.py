@@ -39,10 +39,11 @@ def home():
 @app.route("/room")
 def room():
     room = session.get("room")
+    owner = session.get("name")
     if room is None or session.get("name") is None or room not in rooms:
         return redirect(url_for("home"))
 
-    return render_template("room.html", code=room, messages=rooms[room]["messages"])
+    return render_template("room.html", code=room, messages=rooms[room]["messages"], owner=owner)
 
 @socketio.on("message")
 def message(data):

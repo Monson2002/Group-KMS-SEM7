@@ -9,28 +9,31 @@
                 </div>
                 <div class="flex flex-col h-full overflow-x-auto mb-4 w-[-webkit-fill-available] rounded-2xl">
                     <div class="flex flex-col h-full">
-                        <div class="grid-cols-12 gap-y-2" id="messages">
+                        <div class="grid-cols-12 gap-y-2 h-screen overflow-y-scroll" id="messages">
                             <!-- Chats -->
                         </div>
                     </div>
                 </div>
                 <div class="flex flex-row items-center h-16 rounded-xl bg-white w-full px-4">
                     <div>
-                        <button class="flex items-center justify-center text-gray-400 hover:text-gray-600">
+                        <!-- Attachments Button -->
+                        <!-- <button class="flex items-center justify-center text-gray-400 hover:text-gray-600">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13">
                                 </path>
                             </svg>
-                        </button>
+                        </button> -->
+                        <!-- Attachments Button -->
                     </div>
                     <div class="flex-grow ml-4">
                         <div class="relative w-full">
                             <input type="text"
                                 class="flex w-full border rounded-xl focus:outline-none focus:border-indigo-300 pl-4 h-10"
                                 id="message" />
-                            <button
+                            <!-- Smiley Button -->
+                            <!-- <button
                                 class="absolute flex items-center justify-center h-full w-12 right-0 top-0 text-gray-400 hover:text-gray-600">
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                                     xmlns="http://www.w3.org/2000/svg">
@@ -38,7 +41,8 @@
                                         d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
                                     </path>
                                 </svg>
-                            </button>
+                            </button> -->
+                            <!-- Smiley Button -->
                         </div>
                     </div>
                     <div class="ml-4">
@@ -62,32 +66,89 @@
 </div>
 <script type="text/javascript">
     var socketio = io();
+    var userId = "{{session['name']}}";
 
     const messages = document.getElementById("messages");
     console.log(sessionStorage);
     const createMessage = (name, msg) => {
-            const content = 
+
+        if (msg == "has entered the room") {
+
+            var content = 
             `
-            <div class="text m-4">
-               <div class="flex justify-end items-center bg-indigo-100 p-4 max-w-">
-                   <span>
-                       <strong>${name}</strong>: ${new Date().toLocaleString([], {
-                hour: '2-digit',
-                minute: '2-digit'
-            })}
-                   </span>
-                   <span class="muted">
-                       ${msg}
-                   </span>    
-               </div>
-            </div>
+                <div class="text flex justify-center items-center">
+                    <div class="m-4 p-2 bg-white w-fit text-gray-500 rounded-lg">
+                        <span>
+                            ${name} ${msg}
+                        </span>   
+                    </div>  
+                </div>
             `;
-    
+
+        } else {
+
+            const horizontalAlign = name == userId;
+
+            if (horizontalAlign) {
+                var content =
+                    `
+                    <div class="text flex justify-end items-center">
+                        <div class="px-4 py-1">
+                            <div class="p-4 bg-green-300 w-fit flex flex-col rounded-b-2xl rounded-tl-2xl">
+                                <span class="muted text-lg font-semibold">
+                                    ${msg}
+                                </span>  
+                                <span class="text-gray-600 flex justify-end">
+                                    ${name}
+                                </span>
+                            </div>  
+                            <div class="p-2 flex justify-end text-gray-600 text-sm">
+                                ${new Date().toLocaleString([], {
+                                    hour: '2-digit',
+                                    minute: '2-digit'
+                                })}        
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                var content =
+                    `
+                    <div class="text flex justify-start items-center">
+                        <div class="px-4 py-1">
+                            <div class="p-4 bg-indigo-100 w-fit flex flex-col rounded-b-2xl rounded-tr-2xl">
+                                <span class="muted text-lg font-semibold">
+                                    ${msg}
+                                </span>  
+                                <span class="text-gray-600 flex justify-start">
+                                    ${name}
+                                </span>
+                            </div>  
+                            <div class="p-2 flex justify-start text-gray-600 text-sm">
+                                ${new Date().toLocaleString([], {
+                                    hour: '2-digit',
+                                    minute: '2-digit'
+                                })}        
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function autoScrollDown(containerId) {
+            var container = document.getElementById(containerId);
+            container.scrollTop = container.scrollHeight;
+        }
+
         messages.innerHTML += content;
+
+        autoScrollDown("messages");
     };
 
     socketio.on("message", (data) => {
         createMessage(data.name, data.message);
+        console.log(data, userId);
     });
 
     const sendMessage = () => {
