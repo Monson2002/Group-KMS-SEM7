@@ -26,7 +26,7 @@ def home():
         
         room = code
         if create != False:
-            rooms[room] = {"members": 0, "messages": [], "member_names": []}
+            rooms[room] = {"members": 0, "messages": []}
         elif code not in rooms:
             return render_template("home.html", error="Room does not exist.", code=code, name=name)
         
@@ -53,7 +53,8 @@ def message(data):
     
     content = {
         "name": session.get("name"),
-        "message": data["data"]
+        "message": data["data"],
+        # "rooms" : rooms[room]["member_names"]
     }
     send(content, to=room)
     rooms[room]["messages"].append(content)
@@ -73,7 +74,7 @@ def connect():
     join_room(room)
     send({"name": name, "message": "has entered the room"}, to=room)
     rooms[room]["members"] += 1
-    rooms[room]["member_names"].append(name)
+    # rooms[room]["member_names"].append(name)
     print(f"{name} joined room {room}")
 
 @socketio.on("disconnect")

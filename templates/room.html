@@ -1,11 +1,20 @@
-{% extends 'base.html' %} {% block content %}
+{% extends 'base.html' %}
+{% block content %}
 <div class="flex h-screen antialiased text-gray-800">
     <div class="flex flex-col h-full w-full overflow-x-hidden">
         <div class="flex flex-col flex-auto h-full p-6">
             <div class="flex flex-col justify-center items-center flex-shrink-0 rounded-2xl bg-gray-100 h-full p-4">
                 <div
-                    class="flex items-center justify-center w-[-webkit-fill-available] rounded-2xl p-1 font-bold text-4xl bg-indigo-500 text-white">
-                    Room {{code}}
+                    class="flex items-center justify-between w-[-webkit-fill-available] rounded-2xl p-1 font-bold text-4xl bg-indigo-500 text-white">
+                    <div class="flex justify-center items-center text-xl bg-zinc-500 text-blue-300 w-6 h-6 p-1 ml-2 rounded-full ring-2 ring-gray-300 dark:ring-gray-500" src="/docs/images/people/profile-picture-5.jpg" alt="Bordered avatar">
+                        {{session['name'][0][0].upper()}}
+                    </div>
+                    <div>
+                        Room {{code}}
+                    </div>
+                    <div>
+                        <!-- Dummy Div -->
+                    </div>
                 </div>
                 <div class="flex flex-col h-full overflow-x-auto mb-4 w-[-webkit-fill-available] rounded-2xl">
                     <div class="flex flex-col h-full">
@@ -71,9 +80,7 @@
     const messages = document.getElementById("messages");
     console.log(sessionStorage);
     const createMessage = (name, msg) => {
-
         if (msg == "has entered the room") {
-
             var content = 
             `
                 <div class="text flex justify-center items-center">
@@ -84,11 +91,8 @@
                     </div>  
                 </div>
             `;
-
         } else {
-
             const horizontalAlign = name == userId;
-
             if (horizontalAlign) {
                 var content =
                     `
@@ -165,4 +169,5 @@
 <script type="text/javascript">
     createMessage("{{msg.name}}", "{{msg.message}}");
 </script>
-{% endfor %} {% endblock %}
+{% endfor %} 
+{% endblock %}
