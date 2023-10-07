@@ -1,11 +1,13 @@
 from flask import Flask, render_template, request, session, redirect, url_for
 from flask_socketio import join_room, leave_room, send, SocketIO, emit
-import random
-from string import ascii_uppercase
+from flask_session import Session
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "hjhjsdahhds"
 socketio = SocketIO(app)
+
+app.config['SESSION_TYPE'] = 'filesystem'
+Session(app)
 
 rooms = {}
 
@@ -26,7 +28,10 @@ def home():
         
         room = code
         if create != False:
-            rooms[room] = {"members": 0, "messages": []}
+            if code not in rooms:
+                rooms[room] = {"members": 0, "messages": []}
+            else:
+                return render_template("home.html", error="Room already exists.", code=code, name=name)
         elif code not in rooms:
             return render_template("home.html", error="Room does not exist.", code=code, name=name)
         
