@@ -1,29 +1,66 @@
-import secrets
 
-class KMS:
+class KeyManagementServer:
     def __init__(self):
-        self.TEK = secrets.token_bytes(16)
-        self.dic = {"KMS": self.TEK}
+        self.keys = {}
+        self.group_key = self.generate_key()  # Generate a new group key
+        self.user_keys = {}  # Dictionary to store user keys
+        self.keys["KMS"] = self.group_key,1
+        self.keys["Users"] = self.user_keys
 
-    def update(self, count):
-        print(count)
-        self.dic[count] = secrets.token_bytes(16)
+    def get_keys(self):
+        return self.keys
 
-    def getTEK(self):
-        return self.TEK
-    
-    def getDic(self):
-        return self.dic
+    def get_group_key(self):
+        return self.group_key
 
-class Client(KMS):
-    __count = 1
-    def __init__(self, KMS):
-        self.TEK = KMS.getTEK()
-        self.dic = KMS.getDic()
-        super().update(Client.__count)
-        Client.__count += 1
+    def get_user_key(self, username):
+        if username in self.user_keys:
+            return self.user_keys[username]
+        else:
+            return None
 
-kms = KMS()
-u1 = Client(kms)
-print(kms.getDic())
-print(u1.getDic())
+    def get_user_keys(self):
+        if self.user_keys:
+            return self.user_keys
+        else:
+            return None
+
+    def generate_key(self):
+        # Generate a new random key (you should use a secure method for key generation)
+        import random
+        import string
+        key_length = 16  # Change this to your desired key length
+        return ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(key_length))
+
+    def add_user(self, username):
+        # Generate a new user key
+        user_key = self.generate_key()
+        
+        # Update the group key
+        self.group_key = self.generate_key()
+        self.keys["KMS"] = self.group_key
+
+        # Store the user key in the dictionary
+        self.user_keys[username] = user_key
+
+    def remove_user(self, username):
+        # Remove the user and their key from the user_keys dictionary
+        if username in self.user_keys:
+            del self.user_keys[username]
+
+        # Update the group key when a user leaves
+        self.keys["KMS"] = self.generate_key()
+
+# Example usage:
+kms = KeyManagementServer()
+print(kms.get_keys())
+
+# Add a new user
+
+kms.add_user("user1")
+print(kms.get_keys())
+kms.add_user("user2")
+
+print(kms.get_keys())
+kms.remove_user("user2")
+print(kms.get_keys())
