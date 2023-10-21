@@ -4,7 +4,7 @@ class KeyManagementServer:
         self.keys = {}
         self.group_key = self.generate_key()  # Generate a new group key
         self.user_keys = {}  # Dictionary to store user keys
-        self.keys["KMS"] = self.group_key,1
+        self.keys["KMS"] = self.group_key
         self.keys["Users"] = self.user_keys
 
     def get_keys(self):
@@ -13,11 +13,15 @@ class KeyManagementServer:
     def get_group_key(self):
         return self.group_key
 
-    def get_user_key(self, username):
-        if username in self.user_keys:
-            return self.user_keys[username]
-        else:
-            return None
+    def get_user_key_store(self, username):
+        dic = {}
+        dic["KMS"] = self.group_key
+        for key,value in self.user_keys.items():
+            if key == username:
+                pass
+            else:
+                dic[key] = value
+        return dic
 
     def get_user_keys(self):
         if self.user_keys:
@@ -51,16 +55,23 @@ class KeyManagementServer:
         # Update the group key when a user leaves
         self.keys["KMS"] = self.generate_key()
 
+
 # Example usage:
 kms = KeyManagementServer()
 print(kms.get_keys())
 
-# Add a new user
-
 kms.add_user("user1")
 print(kms.get_keys())
-kms.add_user("user2")
 
+kms.add_user("user2")
 print(kms.get_keys())
-kms.remove_user("user2")
+
+kms.add_user("user3")
 print(kms.get_keys())
+ 
+kms.add_user("user4")
+print(kms.get_keys())
+
+for userName,userValue in kms.user_keys.items():
+    print(userName,end=" :> ")
+    print(kms.get_user_key_store(userName))
