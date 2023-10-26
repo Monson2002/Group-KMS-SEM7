@@ -1,4 +1,5 @@
 import secrets
+import time
 class KeyManagementServer:
     def __init__(self):
         self.keys = {}
@@ -53,7 +54,7 @@ class KeyManagementServer:
         # Update the group key when a user leaves
         self.keys["KMS"] = self.generate_key()
 
-
+start = time.perf_counter()
 kms = KeyManagementServer()
 print("Added KMS : ")
 print(kms.get_keys(),end="\n\n")
@@ -83,3 +84,6 @@ print(kms.get_keys(),end="\n\n")
 # for userName,userValue in kms.user_keys.items():
 #     print(userName,end=" :> ")
 #     print(kms.get_user_key_store(userName))
+end = time.perf_counter()
+
+print(f"Time Taken : {(end-start) * 10**6} micro seconds")
