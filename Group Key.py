@@ -86,4 +86,4 @@ print(kms.get_keys(),end="\n\n")
 #     print(kms.get_user_key_store(userName))
 end = time.perf_counter()
 
-print(f"Time Taken : {(end-start) * 10**6} micro seconds")
+print(f"Total Time Taken : {((end-start) * 10**6):.02f} micro seconds")
