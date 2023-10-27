@@ -3,20 +3,28 @@ import time
 class KeyManagementServer:
     def __init__(self):
         self.keys = {}
-        self.group_key = self.generate_key()  # Generate a new group key
+        # self.generate_key = self.generate_key()  # Generate a new group key
         self.user_keys = {}  # Dictionary to store user keys
-        self.keys["KMS"] = self.group_key
+        self.keys["KMS"] = self.generate_key()
         self.keys["Users"] = self.user_keys
+
+    # def __init__(self, str):
+    #     if str == "KMS":
+    #         self.keys = {}
+    #         self.user_keys = {}  # Dictionary to store user keys
+    #         self.keys["KMS"] = self.generate_key()
+    #         self.keys["Users"] = self.user_keys
+
 
     def get_keys(self):
         return self.keys
 
-    def get_group_key(self):
-        return self.group_key
+    def get_generate_key(self):
+        return self.generate_key
 
     def get_user_key_store(self, username):
         dic = {}
-        dic["KMS"] = self.group_key
+        dic["KMS"] = self.keys["KMS"]
         for key,value in self.user_keys.items():
             if key == username:
                 pass
@@ -37,11 +45,13 @@ class KeyManagementServer:
 
     def add_user(self, username):
         # Generate a new user key
-        user_key = self.group_key
+        user_key = self.keys["KMS"]
         
         # Update the group key
-        self.group_key = self.generate_key()
-        self.keys["KMS"] = self.group_key
+        self.keys["KMS"] = self.generate_key()
+        # Update the user key store
+        for key,value in self.user_keys.items():
+            self.user_keys[key] = self.generate_key()
 
         # Store the user key in the dictionary
         self.user_keys[username] = user_key
@@ -53,15 +63,16 @@ class KeyManagementServer:
 
         # Update the group key when a user leaves
         self.keys["KMS"] = self.generate_key()
+        # Update the user key store
+        for key,value in self.user_keys.items():
+            self.user_keys[key] = self.generate_key()
 
 start = time.perf_counter()
 kms = KeyManagementServer()
 
 print("Added KMS : ")
 print(kms.get_keys())
-for userName,userValue in kms.user_keys.items():
-    print(userName,end=" :> ")
-    print(kms.get_user_key_store(userName))
+
 print("",end="\n\n")
 
 kms.add_user("user1")
