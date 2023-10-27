@@ -56,34 +56,62 @@ class KeyManagementServer:
 
 start = time.perf_counter()
 kms = KeyManagementServer()
+
 print("Added KMS : ")
-print(kms.get_keys(),end="\n\n")
+print(kms.get_keys())
+for userName,userValue in kms.user_keys.items():
+    print(userName,end=" :> ")
+    print(kms.get_user_key_store(userName))
+print("",end="\n\n")
 
 kms.add_user("user1")
 print("Added User1 : ")
-print(kms.get_keys(),end="\n\n")
+print(kms.get_keys())
+for userName,userValue in kms.user_keys.items():
+    print(userName,end=" :> ")
+    print(kms.get_user_key_store(userName))
+print("",end="\n\n")
 
 kms.add_user("user2")
 print("Added User2 : ")
-print(kms.get_keys(),end="\n\n")
+print(kms.get_keys())
+for userName,userValue in kms.user_keys.items():
+    print(userName,end=" :> ")
+    print(kms.get_user_key_store(userName))
+print("",end="\n\n")
 
 kms.add_user("user3")
 print("Added User3 : ")
-print(kms.get_keys(),end="\n\n")
+print(kms.get_keys())
+for userName,userValue in kms.user_keys.items():
+    print(userName,end=" :> ")
+    print(kms.get_user_key_store(userName))
+print("",end="\n\n")
 
 kms.add_user("user4")
 print("Added User4 : ")
-print(kms.get_keys(),end="\n\n")
-# for userName,userValue in kms.user_keys.items():
-#     print(userName,end=" :> ")
-#     print(kms.get_user_key_store(userName))
+print(kms.get_keys())
+for userName,userValue in kms.user_keys.items():
+    print(userName,end=" :> ")
+    print(kms.get_user_key_store(userName))
+print("",end="\n\n")
 
 kms.remove_user("user2")
 print("Removed User2 : ")
-print(kms.get_keys(),end="\n\n")
-# for userName,userValue in kms.user_keys.items():
-#     print(userName,end=" :> ")
-#     print(kms.get_user_key_store(userName))
+print(kms.get_keys())
+for userName,userValue in kms.user_keys.items():
+    print(userName,end=" :> ")
+    print(kms.get_user_key_store(userName))
+print("",end="\n\n")
+
+kms.add_user("user2")
+print("Added User2 : ")
+print(kms.get_keys())
+for userName,userValue in kms.user_keys.items():
+    print(userName,end=" :> ")
+    print(kms.get_user_key_store(userName))
+print("",end="\n\n")
+
 end = time.perf_counter()
 
-print(f"Total Time Taken : {((end-start) * 10**6):.02f} micro seconds")
+print(f"Total Time Taken : {((end-start) * 10**9):.02f} nano seconds")
