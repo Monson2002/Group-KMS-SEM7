@@ -131,7 +131,7 @@ for userName,userValue in kms.user_keys.items():
     if kms.get_user_key_store(userName)['KMS']==kms.get_keys()['KMS']:
         print(f"For {userName} KMS matches with user key")
     else:
-        print(f"For {userName} KMS does not matche with user key")
+        print(f"For {userName} KMS does not match with user key")
     # print(userName,end=" :> ")
     # print(kms.get_user_key_store(userName))
 
