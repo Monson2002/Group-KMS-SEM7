@@ -2,6 +2,7 @@ import threading
 import socket
 import secrets
 import time
+from Crypto.Cipher import AES
 import json
 
 class KeyManagementServer:
@@ -18,6 +19,10 @@ class KeyManagementServer:
     #         self.user_keys = {}  # Dictionary to store user keys
     #         self.keys["KMS"] = self.generate_key()
     #         self.keys["Users"] = self.user_keys
+
+    # def compare_kmss(self):
+    #     print(self.get_user_key_store())
+    #     return "All kms are matched to the main kms"
 
 
     def get_keys(self):
@@ -122,10 +127,16 @@ kms.add_user("user4")
 # kms.add_user("user2")
 # print("Added User2 : ")
 # print(kms.get_keys())
-# for userName,userValue in kms.user_keys.items():
-#     print(userName,end=" :> ")
-#     print(kms.get_user_key_store(userName))
-# print("",end="\n\n")
+for userName,userValue in kms.user_keys.items():
+    if kms.get_user_key_store(userName)['KMS']==kms.get_keys()['KMS']:
+        print(f"For {userName} KMS matches with user key")
+    else:
+        print(f"For {userName} KMS does not match with user key")
+    # print(userName,end=" :> ")
+    # print(kms.get_user_key_store(userName))
+
+print("",end="\n\n")
+
 
 end = time.perf_counter()
 
