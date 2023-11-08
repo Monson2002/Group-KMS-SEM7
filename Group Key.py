@@ -2,7 +2,6 @@ import secrets
 import time
 import hashlib
 
-
 class KeyManagementServer:
     def __init__(self):
         self.keys = {}
