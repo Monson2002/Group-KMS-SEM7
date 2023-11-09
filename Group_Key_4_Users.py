@@ -71,62 +71,49 @@ print(kms.get_keys())
 print("",end="\n\n")
 
 start = time.perf_counter()
-
-# # Add 4 users
-# kms.add_user("user1")
-# print("Added User1 : ")
-# print(kms.get_keys())
-# for userName,userValue in kms.user_keys.items():
-#     print(userName,end=" :> ")
-#     print(kms.get_user_key_store(userName))
-# print("",end="\n\n")
-
-# kms.add_user("user2")
-# print("Added User2 : ")
-# print(kms.get_keys())
-# for userName,userValue in kms.user_keys.items():
-#     print(userName,end=" :> ")
-#     print(kms.get_user_key_store(userName))
-# print("",end="\n\n")
-
-# kms.add_user("user3")
-# print("Added User3 : ")
-# print(kms.get_keys())
-# for userName,userValue in kms.user_keys.items():
-#     print(userName,end=" :> ")
-#     print(kms.get_user_key_store(userName))
-# print("",end="\n\n")
-
-# kms.add_user("user4")
-# print("Added User4 : ")
-# print(kms.get_keys())
-# for userName,userValue in kms.user_keys.items():
-#     print(userName,end=" :> ")
-#     print(kms.get_user_key_store(userName))
-# print("",end="\n\n")
-
-# kms.remove_user("user2")
-# print("Removed User2 : ")
-# print(kms.get_keys())
-# for userName,userValue in kms.user_keys.items():
-#     print(userName,end=" :> ")
-#     print(kms.get_user_key_store(userName))
-# print("",end="\n\n")
-
-# kms.add_user("user2")
-# print("Added User2 : ")
-# print(kms.get_keys())
-# for userName,userValue in kms.user_keys.items():
-#     print(userName,end=" :> ")
-#     print(kms.get_user_key_store(userName))
-# print("",end="\n\n")
-
-# Adding 100 users
-for i in range(100):
-    kms.add_user("user"+str(i+1))
-    print("Added User "+str(i+1))
-
+# Add 4 users
+kms.add_user("user1")
+print("Added User1 : ")
 print(kms.get_keys())
+for userName,userValue in kms.user_keys.items():
+    print(userName,end=" :> ")
+    print(kms.get_user_key_store(userName))
+print("",end="\n\n")
+kms.add_user("user2")
+print("Added User2 : ")
+print(kms.get_keys())
+for userName,userValue in kms.user_keys.items():
+    print(userName,end=" :> ")
+    print(kms.get_user_key_store(userName))
+print("",end="\n\n")
+kms.add_user("user3")
+print("Added User3 : ")
+print(kms.get_keys())
+for userName,userValue in kms.user_keys.items():
+    print(userName,end=" :> ")
+    print(kms.get_user_key_store(userName))
+print("",end="\n\n")
+kms.add_user("user4")
+print("Added User4 : ")
+print(kms.get_keys())
+for userName,userValue in kms.user_keys.items():
+    print(userName,end=" :> ")
+    print(kms.get_user_key_store(userName))
+print("",end="\n\n")
+kms.remove_user("user2")
+print("Removed User2 : ")
+print(kms.get_keys())
+for userName,userValue in kms.user_keys.items():
+    print(userName,end=" :> ")
+    print(kms.get_user_key_store(userName))
+print("",end="\n\n")
+kms.add_user("user2")
+print("Added User2 : ")
+print(kms.get_keys())
+for userName,userValue in kms.user_keys.items():
+    print(userName,end=" :> ")
+    print(kms.get_user_key_store(userName))
+print("",end="\n\n")
 
 end = time.perf_counter()
 
