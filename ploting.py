@@ -1,10 +1,10 @@
 import matplotlib.pyplot as plt
 
-# Sample data for the first line graph
+# Sample data for the first line graph (MD5)
 md5_x = [10, 20, 30, 50, 80, 100]
 md5_y = [0.29, 1.26, 3.36, 10.87, 16.39, 24.28]
 
-# Sample data for the second line graph
+# Sample data for the second line graph (SHA)
 sha1_x = [10, 20, 30, 50, 80, 100]
 sha1_y = [0.64, 5.61, 7.95, 24.00, 47.25, 49.21]
 
