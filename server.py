@@ -1,197 +1,48 @@
 import threading
 import socket
-import secrets
-import time
-from Crypto.Cipher import AES
-import json
-
-class KeyManagementServer:
-    def __init__(self):
-        self.keys = {}
-        # self.generate_key = self.generate_key()  # Generate a new group key
-        self.user_keys = {}  # Dictionary to store user keys
-        self.keys["KMS"] = self.generate_key()
-        self.keys["Users"] = self.user_keys
-
-    # def __init__(self, str):
-    #     if str == "KMS":
-    #         self.keys = {}
-    #         self.user_keys = {}  # Dictionary to store user keys
-    #         self.keys["KMS"] = self.generate_key()
-    #         self.keys["Users"] = self.user_keys
-
-    # def compare_kmss(self):
-    #     print(self.get_user_key_store())
-    #     return "All kms are matched to the main kms"
-
-
-    def get_keys(self):
-        return self.keys
-
-    def get_generate_key(self):
-        return self.generate_key
-
-    def get_user_key_store(self, username):
-        dic = {}
-        dic["KMS"] = self.keys["KMS"]
-        for key,value in self.user_keys.items():
-            if key == username:
-                pass
-            else:
-                dic[key] = value
-        return dic
-
-    def get_user_keys(self):
-        if self.user_keys:
-            return self.user_keys
-        else:
-            return None
-
-    def generate_key(self):
-        # Generate a random key
-        key = secrets.token_urlsafe(16)
-        return key
-
-    def add_user(self, username):
-        # Generate a new user key
-        user_key = self.keys["KMS"]
-        
-        # Update the group key
-        self.keys["KMS"] = self.generate_key()
-        # Update the user key store
-        for key,value in self.user_keys.items():
-            self.user_keys[key] = self.generate_key()
-
-        # Store the user key in the dictionary
-        self.user_keys[username] = user_key
-
-    def remove_user(self, username):
-        # Remove the user and their key from the user_keys dictionary
-        if username in self.user_keys:
-            del self.user_keys[username]
-
-        # Update the group key when a user leaves
-        self.keys["KMS"] = self.generate_key()
-        # Update the user key store
-        for key,value in self.user_keys.items():
-            self.user_keys[key] = self.generate_key()
-
-start = time.perf_counter()
-kms = KeyManagementServer()
-
-# print("Added KMS : ")
-# print(kms.get_keys())
-
-# print("",end="\n\n")
-
-kms.add_user("user1")
-# print("Added User1 : ")
-# print(kms.get_keys())
-# for userName,userValue in kms.user_keys.items():
-#     print(userName,end=" :> ")
-#     print(kms.get_user_key_store(userName))
-# print("",end="\n\n")
-
-kms.add_user("user2")
-# print("Added User2 : ")
-# # print(kms.get_keys())
-# for userName,userValue in kms.user_keys.items():
-#     print(userName,end=" :> ")
-#     print(kms.get_user_key_store(userName))
-# print("",end="\n\n")
-
-kms.add_user("user3")
-# print("Added User3 : ")
-# print(kms.get_keys())
-# for userName,userValue in kms.user_keys.items():
-#     print(userName,end=" :> ")
-#     print(kms.get_user_key_store(userName))
-# print("",end="\n\n")
-
-kms.add_user("user4")
-# print("Added User4 : ")
-# print(kms.get_keys())
-# for userName,userValue in kms.user_keys.items():
-#     print(userName,end=" :> ")
-#     print(kms.get_user_key_store(userName))
-# print("",end="\n\n")
-
-# kms.remove_user("user2")
-# print("Removed User2 : ")
-# print(kms.get_keys())
-# for userName,userValue in kms.user_keys.items():
-#     print(userName,end=" :> ")
-#     print(kms.get_user_key_store(userName))
-# print("",end="\n\n")
-
-# kms.add_user("user2")
-# print("Added User2 : ")
-# print(kms.get_keys())
-for userName,userValue in kms.user_keys.items():
-    if kms.get_user_key_store(userName)['KMS']==kms.get_keys()['KMS']:
-        print(f"For {userName} KMS matches with user key")
-    else:
-        print(f"For {userName} KMS does not match with user key")
-    # print(userName,end=" :> ")
-    # print(kms.get_user_key_store(userName))
-
-print("",end="\n\n")
-
-
-end = time.perf_counter()
-
-# print(f"Total Time Taken : {((end-start) * 10**9):.02f} nano seconds")
-
-server=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-server.bind(("localhost",9999))
+host = '192.168.0.104'
+port = 59000
+server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+server.bind((host, port))
 server.listen()
-
-clients=[]
-nicknames=[]
+clients = []
+aliases = []
 
 def broadcast(message):
     for client in clients:
         client.send(message)
-        
-def multicast_keys(keys_dict):
-    for userName,userValue in kms.user_keys.items():
-        print(userName,end=" :> ")
-        print(kms.get_user_key_store(userName))
-        
-res_bytes = json.dumps(kms.get_keys()).encode('utf-8')
 
-def handle(client):
+# Function to handle clients'connections
+def handle_client(client):
     while True:
         try:
-            message=client.recv(1024)
+            message = client.recv(1024)
             broadcast(message)
         except:
-            index=client.index(client)
+            index = clients.index(client)
             clients.remove(client)
             client.close()
-            nickname=nicknames[index]
-            broadcast(f"{nickname} left the chat".encode('ascii'))
-            nicknames.remove(nickname)
+            alias = aliases[index]
+            broadcast(f'{alias} has left the chat room!'.encode('utf-8'))
+            aliases.remove(alias)
             break
         
-def receive():
+# Main function to receive the clients connection
+def connection_request ():
+    print('Server is running and listening ...')
     while True:
-        client, address=server.accept()
-        print(f"Connected with {str(address)}")
-        
-        # client.send(public_key.save_pkcs1("PEM"))
-        client.send("NICK".encode("ascii"))
-        nickname=client.recv(1024).decode('ascii')
-        nicknames.append(nickname)
+        client, address = server.accept()
+        print(f'A connection is established with {str(address)}')
+        client.send('alias?'.encode('utf-8'))
+        alias = client.recv(1024)
+        aliases.append(alias)
         clients.append(client)
-
-        print(f"Nickname of the client is {nickname}")
-        print(res_bytes)
-        broadcast(f'{nickname} JOINED THE CHAT'.encode('ascii'))
-        client.send("CONNECTED TO SERVER!".encode('ascii'))
-
-        thread=threading.Thread(target=handle, args=(client,))
+        server_msg = f'The alias of this client is {alias}'.encode('utf-8')
+        print(server_msg.decode('utf-8'))
+        broadcast(f'{alias} has connected to the chat room'.encode('utf-8'))
+        # client.send('you are now connected!'.encode('utf-8'))
+        thread = threading.Thread(target=handle_client, args=(client,))
         thread.start()
 
-print("SERVER IS LISTENING..")
-receive()
+if __name__ == "__main__":
+    connection_request()
